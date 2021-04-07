@@ -1,18 +1,21 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item>Equipment</el-breadcrumb-item>
+    </el-breadcrumb>
+    <EquipmentList />
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+/* eslint-disable */
+import EquipmentList from '@/components/EquipmentList.vue'
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    EquipmentList
   }
 }
+/* eslint-enable */
+
 </script>

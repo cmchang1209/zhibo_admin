@@ -1,0 +1,30 @@
+{
+  "id": "2431341",
+  "name": "fidodarts",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-third",
+  "description": "fidodarts",
+  "glyphs": [
+    {
+      "icon_id": "5083542",
+      "name": "play",
+      "font_class": "play",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "5127443",
+      "name": "pause",
+      "font_class": "pause",
+      "unicode": "e7e1",
+      "unicode_decimal": 59361
+    },
+    {
+      "icon_id": "6986998",
+      "name": "stop",
+      "font_class": "stop",
+      "unicode": "e90f",
+      "unicode_decimal": 59663
+    }
+  ]
+}
