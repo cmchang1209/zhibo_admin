@@ -58,7 +58,7 @@ export default {
           citem.id = (item.id + cindex.toString()) * 1 + 1
           citem.mac = '-'
           if (!citem.no) {
-            citem.no = 'Unused'
+            citem.no = `Port-${cindex + 1}-Unused`
             citem.name = '-'
           }
         })
