@@ -63,7 +63,7 @@ export default {
 <style lang="scss">
 body {
   margin: 0;
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -114,6 +114,33 @@ body {
 
 .el-breadcrumb {
   margin-bottom: 15px;
+}
+
+.el-table [class*=el-table__row--level] .el-table__expand-icon {
+  display: inline-block;
+  width: 20px;
+  line-height: 20px;
+  height: 20px;
+  text-align: center;
+  margin-right: 3px;
+}
+
+.text-danger {
+  span {
+    color: #f56c6c !important;
+  }
+  &:hover span {
+    color: #c55353 !important;
+  }
+}
+
+.text-warning {
+  span {
+    color: #E6A23C !important;
+  }
+  &:hover span {
+    color: #c38425 !important;
+  }
 }
 
 </style>

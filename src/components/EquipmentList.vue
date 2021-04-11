@@ -68,14 +68,14 @@ export default {
     },
     fcnrEcho(val) {
       this.cancel()
-        if (val) {
-          this.$message({
-            message: '反向代理開啟成功',
-            type: 'success'
-          })
-        } else {
-          this.$message.error('反向代理開啟失敗')
-        }
+      if (val) {
+        this.$message({
+          message: '反向代理開啟成功',
+          type: 'success'
+        })
+      } else {
+        this.$message.error('反向代理開啟失敗')
+      }
     }
   },
   created() {
@@ -105,19 +105,6 @@ export default {
 
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-.el-table [class*=el-table__row--level] .el-table__expand-icon {
-  display: inline-block;
-  width: 20px;
-  line-height: 20px;
-  height: 20px;
-  text-align: center;
-  margin-right: 3px;
-}
-
-.text-danger span {
-  color: #f56c6c !important;
-}
-
+<style scoped lang="scss">
 </style>
 /* eslint-enable */
