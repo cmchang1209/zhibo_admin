@@ -17,7 +17,7 @@
     <div v-if="type === 4" :class="'template-'+type">
       <el-row class="screen">
         <el-col v-for="item in type" :key="'screen-' + item" :span="12">
-          <Cam :id="id" :chanel="item" :pi="equipmentData" />
+          <Cam :roomId="id" :chanel="item" :piList="equipmentData" />
         </el-col>
       </el-row>
     </div>
@@ -35,7 +35,7 @@ export default {
     roomData(val) {
       this.id = val[0].id
       this.type = val[0].type
-      this.title = val[0].name + ' edit screen'
+      this.title = `Room name : ${val[0].name}`
     },
     EquipmentData(val) {
       this.equipmentData = val

@@ -7,12 +7,17 @@
       </el-table-column>
       <el-table-column prop="mac" label="MAC">
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
-        <template v-if="scope.row.parent" slot-scope="scope">
-          <el-button @click.native.prevent="deleteRow(scope.$index, scope.row)" type="text">
+      <el-table-column label="Connection status">
+        <template slot-scope="scope">
+          <span v-if="scope.row.parent">{{ scope.row.status? 'Connect' : 'Disconnected' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="Operating" width="200">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.parent" @click.native.prevent="deleteRow(scope.$index, scope.row)" type="text">
             Edit Name
           </el-button>
-          <el-button @click.native.prevent="fcnr(scope.$index, scope.row)" type="text" class="text-danger">
+          <el-button v-if="scope.row.parent && scope.row.status" @click.native.prevent="fcnr(scope.$index, scope.row)" type="text" class="text-danger">
             FCNR
           </el-button>
         </template>
@@ -54,6 +59,9 @@ export default {
       val.map((item) => {
         item.children = JSON.parse(item.children)
         item.parent = true
+        if(!item.status) {
+          item.children = []
+        }
         item.children.map((citem, cindex) => {
           citem.id = (item.id + cindex.toString()) * 1 + 1
           citem.mac = '-'
@@ -64,7 +72,6 @@ export default {
         })
       })
       this.tableData = val
-      //console.log(val)
     },
     fcnrEcho(val) {
       this.cancel()
