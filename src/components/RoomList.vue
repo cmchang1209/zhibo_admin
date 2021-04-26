@@ -3,8 +3,8 @@
     <el-table :data="tableData" style="width: 100%">
       <el-table-column type="index">
       </el-table-column>
-      <el-table-column label="No" prop="no">
-      </el-table-column>
+      <!-- <el-table-column label="No" prop="no">
+      </el-table-column> -->
       <el-table-column label="Name" prop="name">
       </el-table-column>
       <el-table-column label="Type">
@@ -14,13 +14,14 @@
       </el-table-column>
       <el-table-column label="Operating" fixed="right" :width="320">
         <template slot-scope="scope">
-          <el-button type="text" @click.native.prevent="handleEdit(scope.$index, scope.row)">Modify</el-button>
-          <el-button type="text" @click.native.prevent="handleViewEdit(scope.$index, scope.row)" class="text-warning">View Edit</el-button>
+          <el-button type="text" @click.native.prevent="handleEdit(scope.$index, scope.row)">Update</el-button>
+          <el-button type="text" @click.native.prevent="handleViewEdit(scope.$index, scope.row)" class="text-warning">Edit</el-button>
           <el-button type="text" @click.native.prevent="handleDelete(scope.$index, scope.row)" class="text-danger">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog :title="form.title" :visible.sync="dialogRoomVisible">
+    <!-- 修改資料 -->
+    <el-dialog :title="form.title" :visible.sync="dialogRoomVisible" :before-close="updateCancel">
       <el-form :model="form" label-width="120px">
         <el-form-item label="Name">
           <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -32,7 +33,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">Cancel</el-button>
+        <el-button @click="dialogRoomVisible=false">Cancel</el-button>
         <el-button type="primary" @click="update" :loading="loading">Update</el-button>
       </div>
     </el-dialog>
@@ -59,17 +60,18 @@ export default {
         title: '',
         name: '',
         id: '',
-        no: '',
-        style: {
-          id: 4,
-          name: 'Four divisions'
-        }
+        style: 4
       },
       loading: false,
       options: [{
-        id: 4,
-        name: 'Four divisions'
-      }],
+          id: 4,
+          name: 'Four divisions'
+        },
+        {
+          id: 5,
+          name: 'Five divisions'
+        }
+      ],
       del: {
         no: '',
         index: '',
@@ -82,15 +84,23 @@ export default {
     roomList(val) {
       this.tableData = val
     },
-    echoUpdateRoom(val) {
-      if (val.changedRows) {
-      	this.$socket.client.emit('getRoomList')
+    updateRoomEcho(val) {
+      if(val.data.changedRows) {
+        this.tableData.map(iteam => {
+          if(iteam.id === val.id) {
+            iteam.name = val.name
+            iteam.type = val.style
+          }
+        })
+        this.updateCancel()
         this.$message({
           message: 'room data update successfully',
           type: 'success'
         })
+      } else {
+        this.updateCancel()
+        this.$message.error('fail to room data update')
       }
-      this.cancel()
     }
   },
   created() {
@@ -99,8 +109,7 @@ export default {
   computed: {},
   methods: {
     handleEdit(index, row) {
-      this.form.title = 'Modify Room ' + row.no + ' data'
-      this.form.no = row.no
+      this.form.title = 'Modify Room :: ' + row.no + ' data'
       this.form.name = row.name
       this.form.id = row.id
       this.dialogRoomVisible = true
@@ -117,14 +126,14 @@ export default {
     update() {
       if (this.form.name.trim() === '') return
       this.loading = true
-      this.$socket.client.emit('updateRoom', { id: this.form.id, name: this.form.name, type: this.form.style.id, no: this.form.no })
+      this.$socket.client.emit('updateRoom', this.form)
     },
-    cancel() {
+    updateCancel() {
       this.loading = false
       this.form.title = ''
       this.form.name = ''
-      this.form.no = ''
       this.form.index = ''
+      this.form.style = 4
       this.dialogRoomVisible = false
     },
     getTypeName(row) {

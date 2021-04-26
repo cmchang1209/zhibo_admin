@@ -4,9 +4,9 @@
     <el-button v-if="status===''" type="success" icon="el-icon-plus" circle title="Add image" @click="dialogImagelVisible = true"></el-button>
     <div v-if="status">
       <h5>{{ chanelName }}</h5>
-      <el-button type="primary" icon="el-icon-thirdplay" circle title="Play image" @click="changeStatus(2)"></el-button>
-      <el-button type="info" icon="el-icon-thirdpause" circle title="Pause image" @click="changeStatus(3)"></el-button>
-      <el-button type="danger" icon="el-icon-delete" circle title="Delete image" @click="changeStatus(4)"></el-button>
+      <!-- <el-button type="primary" icon="el-icon-thirdplay" circle title="Play image" @click="changeStatus(2)"></el-button>
+      <el-button type="info" icon="el-icon-thirdpause" circle title="Pause image" @click="changeStatus(3)"></el-button> -->
+      <el-button type="danger" icon="el-icon-delete" circle title="Delete image" @click="deleteChanelImage"></el-button>
     </div>
     <!-- Select image source by chanel -->
     <el-dialog :title="'Please select '+chanel+' image source'" :visible.sync="dialogImagelVisible" @closed="cancel">
@@ -25,7 +25,7 @@
           <el-col :span="12">
             <h3>Image source</h3>
             <el-radio-group v-model="form.source">
-              <p v-for="item in imageSource" :key="'source-'+item.id">
+              <p v-for="item in getImageSource" :key="'source-'+item.id">
                 <el-radio :label="item.id">
                   {{ item.name }}
                 </el-radio>
@@ -75,29 +75,27 @@ export default {
       }
     },
     echoAddChanelImage(val) {
-      if (val.me.roomId === this.roomId && val.me.chanel === this.chanel) {
+      if (val.roomId === this.roomId && val.chanel === this.chanel) {
         if (val.data.insertId) {
           this.$socket.client.emit('getChanelData', { id: this.roomId, chanel: this.chanel })
           this.$message({
-            message: `chanel ${val.me.chanel} image source added successfully`,
+            message: `chanel ${val.chanel} image source added successfully`,
             type: 'success'
           })
         }
       }
       this.cancel()
     },
-    echoPlayImage(val) {
-      if (val.me.roomId === this.roomId && val.me.chanel === this.chanel) {
-        if (val.data.status) {
+    echoDeleteImage(val) {
+      if (val.roomId === this.roomId && val.chanel === this.chanel) {
+        if (val.data.affectedRows) {
+          this.$socket.client.emit('getChanelData', { id: this.roomId, chanel: this.chanel })
           this.$message({
-            message: `chanel ${val.me.chanel} image source play successfully`,
+            message: `chanel ${val.chanel} image source deleted successfully`,
             type: 'success'
           })
-        } else {
-          this.$message.error(`chanel ${val.me.chanel} image source play error, code:${val.data.code}`)
         }
       }
-      //console.log(val)
     }
   },
   created() {
@@ -106,6 +104,29 @@ export default {
   computed: {
     getEquipmentList() {
       return this.piList
+    },
+    getImageSource() {
+      var imageSource = []
+      if (this.form.equipment !== '') {
+        this.equipment = this.piList.filter((item) => {
+          return item.id === this.form.equipment
+        })
+        for (var i = 0; i <= 3; i++) {
+          var usb_id = (i + 1)
+          var s = {}
+          s.id = usb_id
+          s.name = `port-${usb_id} ( Unknown )`
+          if (this.equipment[0].status) {
+            this.equipment[0].children.map((item) => {
+              if (item.usb_id === usb_id) {
+                s.name = item.no
+              }
+            })
+          }
+          imageSource.push(s)
+        }
+      }
+      return imageSource
     }
   },
   methods: {
@@ -122,33 +143,10 @@ export default {
       this.form.source = ''
     },
     changeEquipment() {
-      var imageSource = []
-      this.equipment = this.piList.filter((item) => {
-        return item.id === this.form.equipment
-      })
-      for (var i = 0; i <= 3; i++) {
-        var s = {}
-        s.id = i
-        s.name = `port-${i + 1} ( Unknown )`
-        if (this.equipment[0].status) {
-          var children = JSON.parse(this.equipment[0].children)
-          children.map((item) => {
-            if (item.usb_id === i) {
-              s.name = `port-${i + 1} ( ${item.name} )`
-            }
-          })
-        }
-        imageSource.push(s)
-      }
-      this.imageSource = imageSource
+      this.form.source = ''
     },
-    changeStatus(val) {
-      switch (val) {
-        case 2:
-          this.$socket.client.emit('playImage', { roomId: this.roomId, chanel: this.chanel })
-          break
-      }
-      //console.log(val)
+    deleteChanelImage(val) {
+      this.$socket.client.emit('deleteImage', { roomId: this.roomId, chanel: this.chanel })
     }
   }
 }
